@@ -1,0 +1,9 @@
+#!/bin/bash
+
+keyfile="$HOME/.ssh/id_rsa"
+
+if [ -e "$keyfile" ]; then
+	echo "$keyfile already exists"
+else
+	ssh-keygen -t rsa -C "vectorcell@gmail.com"
+fi
