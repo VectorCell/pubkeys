@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ ! -e "$HOME/.ssh/id_rsa" ]; then
+	./keygen
+fi
+
 cd keys
 
 keydir="$HOME/.ssh/keys"
