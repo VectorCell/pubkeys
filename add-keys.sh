@@ -7,6 +7,9 @@ if [ ! -d "$keydir" ]; then
 	mkdir "$keydir"
 fi
 
+cp ~/.ssh/id_rsa.pub $HOSTNAME.pub
+git add $HOSTNAME.pub
+
 for key in $(ls); do
 	if [ -e "$keydir/$key" ]; then
 		if [ "$(md5sum $key | colrm 33)" == "$(md5sum $keydir/$key | colrm 33)" ]; then
