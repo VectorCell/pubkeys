@@ -1,11 +1,18 @@
 #!/bin/bash
 
+if [ ! -e "$HOME/.ssh/id_rsa" ]; then
+	./keygen
+fi
+
 cd keys
 
 keydir="$HOME/.ssh/keys"
 if [ ! -d "$keydir" ]; then
 	mkdir "$keydir"
 fi
+
+cp ~/.ssh/id_rsa.pub $HOSTNAME.pub
+git add $HOSTNAME.pub
 
 for key in $(ls); do
 	if [ -e "$keydir/$key" ]; then
