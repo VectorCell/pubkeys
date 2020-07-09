@@ -1,33 +1,36 @@
 #!/bin/bash
 
-if [ ! -e "$HOME/.ssh/id_rsa" ]; then
-	./keygen
-fi
 
-cd keys
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-keydir="$HOME/.ssh/keys"
-if [ ! -d "$keydir" ]; then
-	mkdir "$keydir"
+# will only generate a key if one is not already present at ~/.ssh/id_rsa
+"$DIR/keygen"
+
+cd "$DIR/keys"
+
+KEYDIR="$HOME/.ssh/keys"
+if [ ! -d "$KEYDIR" ]; then
+	mkdir "$KEYDIR"
 fi
+chmod 700 "$KEYDIR"
 
 cp ~/.ssh/id_rsa.pub $HOSTNAME.pub
 git add $HOSTNAME.pub
 
 for key in $(ls); do
-	if [ -e "$keydir/$key" ]; then
-		if [ "$(md5sum $key | colrm 33)" == "$(md5sum $keydir/$key | colrm 33)" ]; then
+	if [ -e "$KEYDIR/$key" ]; then
+		if [ "$(md5sum $key | colrm 33)" == "$(md5sum $KEYDIR/$key | colrm 33)" ]; then
 			continue
 		fi
-		echo "removing old public key $key from $keydir"
-		rm "$keydir/$key"
+		echo "removing old public key $key from $KEYDIR"
+		rm "$KEYDIR/$key"
 	fi
-	echo "adding new public key $key to $keydir"
-	cp "$key" "$keydir/$key"
+	echo "adding new public key $key to $KEYDIR"
+	cp "$key" "$KEYDIR/$key"
 done
 
-echo "adding all keys in $keydir to authorized_keys"
-cd "$keydir"
+echo "adding all keys in $KEYDIR to authorized_keys"
+cd "$KEYDIR"
 cd ..
-cat $keydir/*.pub > authorized_keys
 
+find "$KEYDIR" -name "*.pub" | xargs cat > authorized_keys

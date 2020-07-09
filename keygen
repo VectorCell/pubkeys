@@ -1,9 +1,10 @@
 #!/bin/bash
 
-keyfile="$HOME/.ssh/id_rsa"
+KEYFILE="$HOME/.ssh/id_rsa"
+EMAIL=$(echo K02bj5CbpFWbnBEbsV2Yy9GdjVmd | rev | base64 -d)
 
-if [ -e "$keyfile" ]; then
-	echo "$keyfile already exists"
+if [ -e "$KEYFILE" ]; then
+	echo "$KEYFILE already exists. Refusing to overwrite."
 else
-	ssh-keygen -t rsa -C "vectorcell@gmail.com"
+	ssh-keygen -t rsa -N "" -f "$KEYFILE" -C "$EMAIL"
 fi
